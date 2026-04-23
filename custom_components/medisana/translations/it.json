@@ -1,0 +1,64 @@
+{
+  "config": {
+    "flow_title": "{name} ({address})",
+    "step": {
+      "user": {
+        "title": "Configura bilancia Medisana",
+        "description": "La bilancia trasmette via Bluetooth solo subito dopo una pesata. Sali sulla bilancia adesso e aspetta che la misurazione sia completata — poi premi Invia e Home Assistant si metterà in ascolto. Hai 60 secondi."
+      },
+      "bluetooth_confirm": {
+        "title": "Conferma bilancia",
+        "description": "Vuoi aggiungere la bilancia Medisana **{name}** ({address}) a Home Assistant?"
+      }
+    },
+    "error": {
+      "scale_not_found": "Nessuna bilancia rilevata durante la scansione. Sali di nuovo sulla bilancia fino a completare la misurazione, poi riprova."
+    },
+    "abort": {
+      "already_configured": "Questa bilancia è già configurata.",
+      "no_devices_found": "Nessuna bilancia Medisana non configurata trovata nelle vicinanze."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Dai un nome agli utenti",
+        "description": "La bilancia Medisana gestisce fino a 8 utenti internamente (da 1 a 8). Inserisci un nome per ogni utente che usi — diventerà il nome del dispositivo in Home Assistant e apparirà come prefisso di tutti i sensori di quell'utente. Lascia vuoto per usare un'etichetta generica.",
+        "data": {
+          "user_1": "Utente 1",
+          "user_2": "Utente 2",
+          "user_3": "Utente 3",
+          "user_4": "Utente 4",
+          "user_5": "Utente 5",
+          "user_6": "Utente 6",
+          "user_7": "Utente 7",
+          "user_8": "Utente 8"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "weight": { "name": "Peso" },
+      "bmi": { "name": "BMI" },
+      "fat": { "name": "Massa grassa" },
+      "water": { "name": "Acqua corporea" },
+      "muscle": { "name": "Massa muscolare" },
+      "bone": { "name": "Massa ossea" },
+      "kcal": { "name": "Metabolismo basale" },
+      "height": { "name": "Altezza" },
+      "age": { "name": "Età" },
+      "last_measurement": { "name": "Ultima misurazione" },
+      "last_weight": { "name": "Ultimo peso" },
+      "last_weighing": { "name": "Ultima pesata" },
+      "gender": {
+        "name": "Sesso",
+        "state": { "male": "Uomo", "female": "Donna" }
+      },
+      "activity_level": {
+        "name": "Livello di attività",
+        "state": { "normal": "Normale", "high": "Elevato" }
+      }
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "config": {
+    "flow_title": "{name} ({address})",
+    "step": {
+      "user": {
+        "title": "Configurer la balance Medisana",
+        "description": "La balance n'émet en Bluetooth que juste après une pesée. Monte sur la balance maintenant et attends que la mesure soit terminée — puis clique sur Envoyer et Home Assistant se mettra à l'écoute. Tu as 60 secondes."
+      },
+      "bluetooth_confirm": {
+        "title": "Confirmer la balance",
+        "description": "Veux-tu ajouter la balance Medisana **{name}** ({address}) à Home Assistant ?"
+      }
+    },
+    "error": {
+      "scale_not_found": "Aucune balance détectée pendant la recherche. Remonte sur la balance jusqu'à ce que la mesure soit terminée, puis réessaye."
+    },
+    "abort": {
+      "already_configured": "Cette balance est déjà configurée.",
+      "no_devices_found": "Aucune balance Medisana non configurée trouvée à proximité."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Nommer les utilisateurs",
+        "description": "La balance Medisana gère jusqu'à 8 utilisateurs en interne (1 à 8). Saisis un nom d'affichage pour chaque emplacement que tu utilises — il deviendra le nom de l'appareil dans Home Assistant et apparaîtra comme préfixe de tous les capteurs de cet utilisateur. Laisse vide pour un libellé générique.",
+        "data": {
+          "user_1": "Utilisateur 1",
+          "user_2": "Utilisateur 2",
+          "user_3": "Utilisateur 3",
+          "user_4": "Utilisateur 4",
+          "user_5": "Utilisateur 5",
+          "user_6": "Utilisateur 6",
+          "user_7": "Utilisateur 7",
+          "user_8": "Utilisateur 8"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "weight": { "name": "Poids" },
+      "bmi": { "name": "IMC" },
+      "fat": { "name": "Masse grasse" },
+      "water": { "name": "Eau corporelle" },
+      "muscle": { "name": "Masse musculaire" },
+      "bone": { "name": "Masse osseuse" },
+      "kcal": { "name": "Métabolisme de base" },
+      "height": { "name": "Taille" },
+      "age": { "name": "Âge" },
+      "last_measurement": { "name": "Dernière mesure" },
+      "last_weight": { "name": "Dernier poids" },
+      "last_weighing": { "name": "Dernière pesée" },
+      "gender": {
+        "name": "Sexe",
+        "state": { "male": "Homme", "female": "Femme" }
+      },
+      "activity_level": {
+        "name": "Niveau d'activité",
+        "state": { "normal": "Normal", "high": "Élevé" }
+      }
+    }
+  }
+}

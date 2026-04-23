@@ -1,0 +1,64 @@
+{
+  "config": {
+    "flow_title": "{name} ({address})",
+    "step": {
+      "user": {
+        "title": "Set up Medisana scale",
+        "description": "The scale only broadcasts over Bluetooth right after a weighing. Step on your scale now and wait for the measurement to finish — then click Submit and we'll listen for it. You have 60 seconds."
+      },
+      "bluetooth_confirm": {
+        "title": "Confirm scale",
+        "description": "Do you want to add the Medisana scale **{name}** ({address}) to Home Assistant?"
+      }
+    },
+    "error": {
+      "scale_not_found": "No scale picked up during the scan. Step on the scale again until the measurement completes, then try once more."
+    },
+    "abort": {
+      "already_configured": "This scale is already configured.",
+      "no_devices_found": "No unconfigured Medisana scales were found nearby."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Name the scale users",
+        "description": "The Medisana scale tracks up to 8 user slots internally (1 to 8). Enter a display name for any slot you use — these names become the device name in Home Assistant and show up as the prefix on every sensor for that user. Leave a slot empty to fall back to a generic label.",
+        "data": {
+          "user_1": "User 1",
+          "user_2": "User 2",
+          "user_3": "User 3",
+          "user_4": "User 4",
+          "user_5": "User 5",
+          "user_6": "User 6",
+          "user_7": "User 7",
+          "user_8": "User 8"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "weight": { "name": "Weight" },
+      "bmi": { "name": "BMI" },
+      "fat": { "name": "Body fat" },
+      "water": { "name": "Body water" },
+      "muscle": { "name": "Muscle" },
+      "bone": { "name": "Bone" },
+      "kcal": { "name": "Basal metabolism" },
+      "height": { "name": "Height" },
+      "age": { "name": "Age" },
+      "last_measurement": { "name": "Last measurement" },
+      "last_weight": { "name": "Latest weight" },
+      "last_weighing": { "name": "Last weighing" },
+      "gender": {
+        "name": "Gender",
+        "state": { "male": "Male", "female": "Female" }
+      },
+      "activity_level": {
+        "name": "Activity level",
+        "state": { "normal": "Normal", "high": "High" }
+      }
+    }
+  }
+}

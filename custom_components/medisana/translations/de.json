@@ -1,0 +1,64 @@
+{
+  "config": {
+    "flow_title": "{name} ({address})",
+    "step": {
+      "user": {
+        "title": "Medisana-Waage einrichten",
+        "description": "Die Waage sendet über Bluetooth nur kurz nach einer Messung. Stell dich jetzt auf die Waage und warte, bis die Messung abgeschlossen ist — klicke dann auf Senden und Home Assistant hört mit. Du hast 60 Sekunden."
+      },
+      "bluetooth_confirm": {
+        "title": "Waage bestätigen",
+        "description": "Möchtest du die Medisana-Waage **{name}** ({address}) zu Home Assistant hinzufügen?"
+      }
+    },
+    "error": {
+      "scale_not_found": "Während der Suche wurde keine Waage erkannt. Stell dich erneut auf die Waage, bis die Messung vollständig abgeschlossen ist, und versuche es nochmal."
+    },
+    "abort": {
+      "already_configured": "Diese Waage ist bereits konfiguriert.",
+      "no_devices_found": "Keine nicht konfigurierten Medisana-Waagen in der Nähe gefunden."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Nutzer der Waage benennen",
+        "description": "Die Medisana-Waage verwaltet intern bis zu 8 Nutzer (1 bis 8). Vergib einen Anzeigenamen für jeden genutzten Slot — er wird zum Gerätenamen in Home Assistant und erscheint als Präfix vor allen Sensoren dieses Nutzers. Leere Felder nutzen eine generische Bezeichnung.",
+        "data": {
+          "user_1": "Nutzer 1",
+          "user_2": "Nutzer 2",
+          "user_3": "Nutzer 3",
+          "user_4": "Nutzer 4",
+          "user_5": "Nutzer 5",
+          "user_6": "Nutzer 6",
+          "user_7": "Nutzer 7",
+          "user_8": "Nutzer 8"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "weight": { "name": "Gewicht" },
+      "bmi": { "name": "BMI" },
+      "fat": { "name": "Körperfett" },
+      "water": { "name": "Körperwasser" },
+      "muscle": { "name": "Muskelmasse" },
+      "bone": { "name": "Knochenmasse" },
+      "kcal": { "name": "Grundumsatz" },
+      "height": { "name": "Größe" },
+      "age": { "name": "Alter" },
+      "last_measurement": { "name": "Letzte Messung" },
+      "last_weight": { "name": "Letztes Gewicht" },
+      "last_weighing": { "name": "Letzte Wägung" },
+      "gender": {
+        "name": "Geschlecht",
+        "state": { "male": "Männlich", "female": "Weiblich" }
+      },
+      "activity_level": {
+        "name": "Aktivitätsgrad",
+        "state": { "normal": "Normal", "high": "Hoch" }
+      }
+    }
+  }
+}
