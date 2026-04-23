@@ -43,6 +43,10 @@ Body composition (fat %, body water %, muscle %, bone, basal metabolism) is **on
 
 **Step 1 — add the repository to HACS:**
 
+[![Add Repository](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=massimiliano024&repository=ha-medisana-scale&category=integration)
+
+Click the button above to add the repository. This opens HACS in your Home Assistant and adds the Medisana repository. If the button doesn't work, add it manually:
+
 1. Open **HACS** → **Integrations** → click the three-dot menu (top right) → **Custom repositories**
 2. Paste `https://github.com/massimiliano024/ha-medisana-scale/` as the URL
 3. Select **Integration** as the category and click **Add**
@@ -55,7 +59,9 @@ Body composition (fat %, body water %, muscle %, bone, basal metabolism) is **on
 
 **Step 3 — add the integration:**
 
-Go to **Settings → Devices & Services → + Add Integration** and search for **Medisana**.
+[![Add Integration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=medisana)
+
+Click the button above to start the setup, or go to **Settings → Devices & Services → + Add Integration** and search for **Medisana**.
 
 ### Manual
 
