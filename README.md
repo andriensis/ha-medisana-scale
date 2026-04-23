@@ -92,6 +92,8 @@ Each configured scale produces one top-level **Medisana scale** device (the hard
 
 You can give each slot a friendly name via **Settings → Devices & Services → Medisana → Configure** — the name you enter becomes the device name in HA, so a slot you've named "Alice" will produce `sensor.alice_weight`, `sensor.alice_bmi`, etc. Unnamed slots fall back to "Medisana scale user N".
 
+![Integration overview with the scale hub and two named user devices](docs/overview.png)
+
 ### On the top-level "Medisana scale" device
 
 Two scale-wide sensors that update on **every** weighing, including anonymous/guest ones where the scale didn't attribute the reading to a specific user:
@@ -100,6 +102,8 @@ Two scale-wide sensors that update on **every** weighing, including anonymous/gu
 |--------|------|-------|
 | Latest weight | kg | Most recent weight the scale transmitted, whoever it was. Useful for quick step-ons (with shoes, without the full body-comp cycle) where no user gets attributed. |
 | Last weighing | — | Timestamp of the most recent weighing |
+
+![Scale hub device with Latest weight and Last weighing sensors](docs/scale-entities.png)
 
 ### On each per-user sub-device
 
@@ -120,6 +124,8 @@ Two scale-wide sensors that update on **every** weighing, including anonymous/gu
 | Activity level | enum | `normal` / `high`, from the scale's user profile |
 
 Values update whenever a completed weighing attributed to that user lands in the scale's sync buffer. Unused slots never materialise until a matching weighing arrives.
+
+![Per-user device showing the full sensor set](docs/user-profile-entities.png)
 
 ## Known limitations
 
