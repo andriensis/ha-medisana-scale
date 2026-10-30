@@ -19,6 +19,7 @@ from homeassistant.components.bluetooth import (
     BluetoothScanningMode,
     BluetoothServiceInfoBleak,
     async_ble_device_from_address,
+    async_last_service_info,
     async_register_callback,
 )
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant, callback
@@ -34,12 +35,14 @@ _LOGGER = logging.getLogger(__name__)
 # weighing cycles are minutes apart at best, so 30s is a safe floor.
 _SESSION_COOLDOWN_SECONDS = 30.0
 
-# Fallback poll interval. HA's bluetooth integration sometimes stops
-# dispatching callbacks for a device after the first advertisement of a
-# session (the reason is under investigation — dedup of identical advert
-# payloads is suspected). Polling HA's BT cache every this many seconds
-# gives us a fallback path to catch subsequent weighings.
-_POLL_INTERVAL_SECONDS = 20.0
+# Fallback poll interval. HA's bluetooth manager only dispatches callbacks
+# when an advertisement's payload changes, and the scale's payload never
+# does — so every weighing after the first is swallowed until HA expires the
+# device from its history (minutes of silence). HA still records each advert
+# in that history, so we poll it and treat a newer timestamp as a fresh
+# advertisement. Short enough to land inside the scale's ~30s BLE window
+# together with ADVERTISEMENT_TO_SESSION_DELAY_SECONDS.
+_POLL_INTERVAL_SECONDS = 5.0
 
 
 MeasurementListener = Callable[[UserMeasurement], None]
@@ -106,7 +109,11 @@ class MedisanaBSCoordinator:
             BluetoothCallbackMatcher(service_uuid=SERVICE_UUID),
             BluetoothScanningMode.ACTIVE,
         )
-        self._poll_task = self.hass.async_create_task(self._poll_loop())
+        # Background task: HA's bootstrap waits on plain tasks, and this loop
+        # never ends, which stalls startup until the bootstrap timeout.
+        self._poll_task = self.hass.async_create_background_task(
+            self._poll_loop(), f"medisana poll {self.address}"
+        )
 
     async def async_stop(self) -> None:
         if self._unregister_bluetooth is not None:
@@ -184,46 +191,25 @@ class MedisanaBSCoordinator:
         await self._run_session_locked()
 
     async def _poll_loop(self) -> None:
-        """Backup path: poll HA's BT cache periodically for the scale.
+        """Backup path: feed adverts the callback never receives.
 
-        HA's advertisement dispatcher sometimes falls silent after the first
-        callback fire — we observed subsequent weighings not dispatching
-        until the integration was reloaded. Polling every
-        _POLL_INTERVAL_SECONDS gives us a second path to notice the scale
-        has advertised (it'll be in HA's BT cache) and trigger a sync.
-        The usual cooldown keeps this from hammering the scale if the
-        callback is working normally.
+        HA drops callbacks for advertisements identical to the previous one
+        (see _POLL_INTERVAL_SECONDS), but still stores each one in its
+        history. A history entry newer than the last advert we handled is a
+        new BLE window, so we hand it to _on_advertisement, which applies
+        the usual address check and cooldown.
+
+        HA keys its history by the address as the adapter reports it
+        (uppercase on Linux), so the lookup uses the uppercase form.
         """
-        try:
-            while True:
-                await asyncio.sleep(_POLL_INTERVAL_SECONDS)
-                now = time.monotonic()
-                if now - self._last_session_scheduled_at < _SESSION_COOLDOWN_SECONDS:
-                    continue
-                ble_device = async_ble_device_from_address(
-                    self.hass, self.address, connectable=True
-                )
-                if ble_device is None:
-                    # Try again without the connectable filter — some
-                    # backends don't set the flag but the device is still
-                    # reachable.
-                    ble_device = async_ble_device_from_address(
-                        self.hass, self.address
-                    )
-                if ble_device is None:
-                    continue
-                _LOGGER.info(
-                    "Poll found scale %s in HA's BT cache — scheduling sync",
-                    self.address,
-                )
-                self._last_session_scheduled_at = now
-                # Use the polled device directly rather than waiting for the
-                # advert callback to populate _latest_service_info.
-                self._latest_service_info = None  # force fallback to polled device
-                self._polled_ble_device = ble_device
-                self.hass.async_create_task(self._run_delayed_session())
-        except asyncio.CancelledError:
-            raise
+        while True:
+            await asyncio.sleep(_POLL_INTERVAL_SECONDS)
+            info = async_last_service_info(
+                self.hass, self.address.upper(), connectable=True
+            )
+            if info is None or (self.last_seen is not None and info.time <= self.last_seen):
+                continue
+            self._on_advertisement(info, BluetoothChange.ADVERTISEMENT)
 
     @callback
     def _set_available(self, available: bool) -> None:
@@ -240,15 +226,13 @@ class MedisanaBSCoordinator:
 
     async def _run_session(self) -> None:
         # Prefer the BLEDevice from the most recent advertisement; fall
-        # back to the polled device; fall back to HA's address-keyed lookup.
+        # back to HA's address-keyed lookup.
         ble_device = None
         if self._latest_service_info is not None:
             ble_device = self._latest_service_info.device
         if ble_device is None:
-            ble_device = getattr(self, "_polled_ble_device", None)
-        if ble_device is None:
             ble_device = async_ble_device_from_address(
-                self.hass, self.address, connectable=True
+                self.hass, self.address.upper(), connectable=True
             )
         if ble_device is None:
             _LOGGER.warning(
